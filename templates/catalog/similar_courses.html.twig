@@ -1,0 +1,61 @@
+{% set catMap = {
+    'Développement Web':    {bg:'#dbeafe', color:'#1d4ed8', icon:'fa-code'},
+    'Data Science':         {bg:'#dcfce7', color:'#15803d', icon:'fa-chart-line'},
+    'Design':               {bg:'#fce7f3', color:'#be185d', icon:'fa-pen-ruler'},
+    'DevOps':               {bg:'#fef3c7', color:'#92400e', icon:'fa-server'},
+    'Développement Mobile': {bg:'#ede9fe', color:'#6d28d9', icon:'fa-mobile-screen'},
+    'Marketing Digital':    {bg:'#fee2e2', color:'#b91c1c', icon:'fa-bullhorn'},
+    'Photographie':         {bg:'#cffafe', color:'#0e7490', icon:'fa-camera'},
+    'Vidéo & Animation':    {bg:'#d1fae5', color:'#065f46', icon:'fa-film'}
+} %}
+
+{% if similarCourses|length > 0 %}
+    <div class="row g-3">
+        {% for course in similarCourses %}
+            {% set cs = catMap[course.category.name] ?? {bg:'#f1f5f9', color:'#475569', icon:'fa-book'} %}
+            <div class="col-sm-6 col-lg-4">
+                <article class="course-card">
+                    <div class="card-top">
+                        <span class="cat-tag" style="background:{{ cs.bg }};color:{{ cs.color }};">
+                            <i class="fa-solid {{ cs.icon }}" style="font-size:0.65rem;"></i>
+                            {{ course.category.name }}
+                        </span>
+                        {% if course.badge == 'Bestseller' %}
+                            <span class="badge-bs">Bestseller</span>
+                        {% elseif course.badge == 'Nouveau' %}
+                            <span class="badge-nw">Nouveau</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body-inner">
+                        <h3 class="c-title">{{ course.name }}</h3>
+                        <p class="c-summary">{{ course.summary }}</p>
+                        <div class="rating-row">
+                            <span class="stars">
+                                {% for i in 1..5 %}{% if i <= course.rating|round(0,'floor') %}★{% else %}☆{% endif %}{% endfor %}
+                            </span>
+                            <span class="r-val">{{ course.rating }}</span>
+                            <span class="r-cnt">({{ course.studentsCount|number_format(0, ',', ' ') }})</span>
+                        </div>
+                        <div class="card-meta">
+                            <span class="meta-item">
+                                <span class="av-init">{{ course.author.name|first }}</span>
+                                {{ course.author.name }}
+                            </span>
+                            {% if course.duration %}
+                                <span class="meta-item"><i class="fa-regular fa-clock"></i> {{ course.duration }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-foot">
+                            <span class="c-price">{{ course.price|number_format(0, ',', ' ') }} DH</span>
+                            <a href="{{ path('app_catalog_show', {slug: course.slug}) }}" class="btn-card">
+                                Voir <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p style="color:var(--muted); font-size:0.85rem;">Aucun cours similaire trouvé.</p>
+{% endif %}

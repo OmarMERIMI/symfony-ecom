@@ -1,0 +1,121 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+    {% if searchQuery %}Résultats : "{{ searchQuery }}"{% else %}Catalogue des cours{% endif %} — SkillHub
+{% endblock %}
+
+{% block body %}
+<div style="background:#fff; border-bottom:1px solid var(--border); padding:1.5rem 0 1.25rem;">
+    <div class="container">
+        <nav style="font-size:0.78rem; color:var(--muted); margin-bottom:0.6rem;">
+            <a href="{{ path('app_home') }}" style="color:var(--muted); text-decoration:none;">Accueil</a>
+            <span class="mx-2">/</span>
+            <span>Catalogue</span>
+        </nav>
+        {% if searchQuery %}
+            <h1 style="font-size:1.4rem; font-weight:800; margin:0; letter-spacing:-0.3px;">
+                Résultats pour <em style="color:var(--primary); font-style:normal;">"{{ searchQuery }}"</em>
+            </h1>
+            <p style="color:var(--muted); font-size:0.84rem; margin:0.3rem 0 0;">
+                {{ courses|length }} cours trouvé{{ courses|length > 1 ? 's' : '' }}
+                — <a href="{{ path('app_catalog_all') }}" style="color:var(--primary); text-decoration:none; font-weight:600;">Réinitialiser</a>
+            </p>
+        {% else %}
+            <h1 style="font-size:1.4rem; font-weight:800; margin:0; letter-spacing:-0.3px;">Tous nos cours en ligne</h1>
+            <p style="color:var(--muted); font-size:0.84rem; margin:0.3rem 0 0;">{{ courses|length }} formations disponibles — apprenez à votre rythme, où que vous soyez.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container" style="padding-top:2rem; padding-bottom:4rem;">
+
+    {# Mobile search #}
+    <form class="d-md-none mb-4" action="{{ path('app_catalog_all') }}" method="GET">
+        <div class="input-group">
+            <span class="input-group-text" style="background:#fff; border-color:var(--border);">
+                <i class="fa-solid fa-magnifying-glass text-muted" style="font-size:0.8rem;"></i>
+            </span>
+            <input type="search" name="q" class="form-control" placeholder="Rechercher…" value="{{ searchQuery }}" style="border-left:0; font-size:0.88rem;">
+            <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); font-size:0.88rem;">Chercher</button>
+        </div>
+    </form>
+
+    {% if courses|length == 0 %}
+        <div style="text-align:center; padding:5rem 1rem;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size:2.5rem; color:var(--border); margin-bottom:1rem;"></i>
+            <h3 style="font-size:1.2rem; font-weight:700; margin-bottom:0.5rem;">Aucun résultat trouvé</h3>
+            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:1.5rem;">Essayez des mots-clés différents ou parcourez tout le catalogue.</p>
+            <a href="{{ path('app_catalog_all') }}" class="btn-primary-solid" style="text-decoration:none; display:inline-flex;">
+                Voir tous les cours
+            </a>
+        </div>
+    {% else %}
+        <div class="row g-3">
+            {% for course in courses %}
+                {% set catMap = {
+                    'Développement Web':    {bg:'#dbeafe', color:'#1d4ed8', icon:'fa-code'},
+                    'Data Science':         {bg:'#dcfce7', color:'#15803d', icon:'fa-chart-line'},
+                    'Design':               {bg:'#fce7f3', color:'#be185d', icon:'fa-pen-ruler'},
+                    'DevOps':               {bg:'#fef3c7', color:'#92400e', icon:'fa-server'},
+                    'Développement Mobile': {bg:'#ede9fe', color:'#6d28d9', icon:'fa-mobile-screen'},
+                    'Marketing Digital':    {bg:'#fee2e2', color:'#b91c1c', icon:'fa-bullhorn'},
+                    'Photographie':         {bg:'#cffafe', color:'#0e7490', icon:'fa-camera'},
+                    'Vidéo & Animation':    {bg:'#d1fae5', color:'#065f46', icon:'fa-film'}
+                } %}
+                {% set cs = catMap[course.category.name] ?? {bg:'#f1f5f9', color:'#475569', icon:'fa-book'} %}
+
+                <div class="col-sm-6 col-lg-4">
+                    <article class="course-card">
+                        <div class="card-top">
+                            <span class="cat-tag" style="background:{{ cs.bg }};color:{{ cs.color }};">
+                                <i class="fa-solid {{ cs.icon }}" style="font-size:0.65rem;"></i>
+                                {{ course.category.name }}
+                            </span>
+                            {% if course.badge == 'Bestseller' %}
+                                <span class="badge-bs">Bestseller</span>
+                            {% elseif course.badge == 'Nouveau' %}
+                                <span class="badge-nw">Nouveau</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-body-inner">
+                            <h3 class="c-title">{{ course.name }}</h3>
+                            <p class="c-summary">{{ course.summary }}</p>
+
+                            <div class="rating-row">
+                                <span class="stars">
+                                    {% for i in 1..5 %}
+                                        {% if i <= course.rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </span>
+                                <span class="r-val">{{ course.rating }}</span>
+                                <span class="r-cnt">({{ course.studentsCount|number_format(0, ',', ' ') }})</span>
+                            </div>
+
+                            <div class="card-meta">
+                                <span class="meta-item">
+                                    <span class="av-init">{{ course.author.name|first }}</span>
+                                    {{ course.author.name }}
+                                </span>
+                                {% if course.duration %}
+                                    <span class="meta-item"><i class="fa-regular fa-clock"></i> {{ course.duration }}</span>
+                                {% endif %}
+                                {% if course.level %}
+                                    <span class="meta-item"><i class="fa-solid fa-signal" style="font-size:0.65rem;"></i> {{ course.level }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-foot">
+                                <span class="c-price">{{ course.price|number_format(0, ',', ' ') }} DH</span>
+                                <a href="{{ path('app_catalog_show', {slug: course.slug}) }}" class="btn-card">
+                                    Voir le cours <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

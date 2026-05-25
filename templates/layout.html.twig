@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillHub — Apprendre, évoluer, réussir{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4338ca;
+            --primary-dk: #3730a3;
+            --primary-lt: #e0e7ff;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --surface: #ffffff;
+            --bg: #f1f5f9;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── NAVBAR ── */
+        .site-nav {
+            background: var(--dark);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .site-nav .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            letter-spacing: -0.4px;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 7px;
+            display: grid;
+            place-items: center;
+            font-size: 0.85rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .nav-link-item {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: color 0.15s, background 0.15s;
+            white-space: nowrap;
+        }
+
+        .nav-link-item:hover,
+        .nav-link-item.is-active {
+            color: #fff;
+            background: rgba(255,255,255,0.09);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 8px;
+            color: #fff;
+            padding: 0.45rem 1rem 0.45rem 2.4rem;
+            font-size: 0.84rem;
+            font-family: inherit;
+            width: 240px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .search-box input::placeholder { color: rgba(255,255,255,0.4); }
+
+        .search-box input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.13);
+            border-color: rgba(99,102,241,0.7);
+        }
+
+        .search-box .ico {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.4);
+            font-size: 0.78rem;
+            pointer-events: none;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.84rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0.35rem 0.7rem;
+            border-radius: 8px;
+            transition: background 0.15s;
+            text-decoration: none;
+            background: none;
+            border: none;
+        }
+
+        .user-pill:hover { background: rgba(255,255,255,0.09); color: #fff; }
+
+        .user-avatar-sm {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .dropdown-menu {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            padding: 0.5rem;
+            min-width: 180px;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            font-size: 0.875rem;
+            padding: 0.45rem 0.75rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover { background: var(--bg); color: var(--primary); }
+
+        .btn-login {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.42rem 1rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            transition: background 0.15s;
+            display: inline-block;
+        }
+
+        .btn-login:hover { background: var(--primary-dk); color: #fff; }
+
+        /* ── FLASH MESSAGES ── */
+        .flash-zone { padding: 0.75rem 0 0; }
+
+        /* ── CONTENT ── */
+        .main-wrap { flex: 1; }
+
+        /* ── COURSE CARDS ── */
+        .course-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .course-card:hover {
+            box-shadow: 0 8px 30px rgba(67,56,202,0.11);
+            border-color: #c7d2fe;
+        }
+
+        .card-top {
+            padding: 1rem 1.1rem 0.65rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .cat-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .badge-bs {
+            background: #fef3c7;
+            color: #78350f;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.22rem 0.55rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-nw {
+            background: #dcfce7;
+            color: #14532d;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.22rem 0.55rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .card-body-inner {
+            padding: 0 1.1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .c-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text);
+            margin-bottom: 0.35rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .c-summary {
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 0.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stars { color: var(--accent); font-size: 0.7rem; letter-spacing: 0.04em; }
+        .r-val { font-weight: 700; font-size: 0.8rem; }
+        .r-cnt { font-size: 0.73rem; color: var(--muted); }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--muted);
+            padding: 0.65rem 0;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .meta-item { display: flex; align-items: center; gap: 0.3rem; }
+
+        .av-init {
+            width: 22px;
+            height: 22px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .card-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.7rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .c-price {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.3px;
+        }
+
+        .btn-card {
+            background: var(--primary-lt);
+            color: var(--primary);
+            border: none;
+            border-radius: 7px;
+            padding: 0.38rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-card:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary-solid {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 0.65rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.15s, transform 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-primary-solid:hover {
+            background: var(--primary-dk);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-light-custom {
+            background: transparent;
+            color: rgba(255,255,255,0.85);
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 9px;
+            padding: 0.65rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-outline-light-custom:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.6);
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+        }
+
+        .footer-brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            text-decoration: none;
+        }
+
+        .footer-brand:hover { color: #fff; }
+
+        .footer-desc { font-size: 0.83rem; line-height: 1.6; max-width: 240px; }
+
+        .footer-heading {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 0.9rem;
+        }
+
+        .footer-links { list-style: none; padding: 0; margin: 0; }
+
+        .footer-links li { margin-bottom: 0.5rem; }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.84rem;
+            transition: color 0.15s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+
+        .footer-divider {
+            border-color: rgba(255,255,255,0.08);
+            margin: 2rem 0 1rem;
+        }
+
+        .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+        .social-links { display: flex; gap: 0.75rem; margin-top: 1rem; }
+
+        .social-links a {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.07);
+            color: rgba(255,255,255,0.6);
+            display: grid;
+            place-items: center;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .social-links a:hover { background: var(--primary); color: #fff; }
+
+        /* ── NEWSLETTER (footer) ── */
+        .nl-title { font-size: 0.9rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+        .nl-sub { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 0.85rem; }
+
+        .nl-form { display: flex; gap: 0.5rem; }
+
+        .nl-form input {
+            flex: 1;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 8px;
+            color: #fff;
+            padding: 0.5rem 0.85rem;
+            font-size: 0.82rem;
+            font-family: inherit;
+        }
+
+        .nl-form input::placeholder { color: rgba(255,255,255,0.35); }
+        .nl-form input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.12); }
+
+        .nl-form button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+
+        .nl-form button:hover { background: var(--primary-dk); }
+
+        /* ── MISC ── */
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.4px;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-sub { color: var(--muted); font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .search-box input { width: 160px; }
+            .section-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    {# ── NAVBAR ── #}
+    <nav class="site-nav">
+        <div class="container d-flex align-items-center gap-3">
+            <a class="brand me-3" href="{{ path('app_home') }}">
+                <span class="brand-mark"><i class="fa-solid fa-bolt"></i></span>
+                SkillHub
+            </a>
+
+            <div class="d-none d-lg-flex align-items-center gap-1 me-3">
+                <a href="{{ path('app_home') }}" class="nav-link-item{% if app.request.attributes.get('_route') == 'app_home' %} is-active{% endif %}">Accueil</a>
+                <a href="{{ path('app_catalog_all') }}" class="nav-link-item{% if app.request.attributes.get('_route') starts with 'app_catalog' %} is-active{% endif %}">Catalogue</a>
+                <a href="{{ path('app_articles') }}" class="nav-link-item{% if app.request.attributes.get('_route') starts with 'app_article' %} is-active{% endif %}">Blog</a>
+            </div>
+
+            <form class="search-box d-none d-md-block ms-auto me-3" action="{{ path('app_catalog_all') }}" method="GET">
+                <i class="fa-solid fa-magnifying-glass ico"></i>
+                <input type="search" name="q" placeholder="Rechercher un cours…" value="{{ app.request.query.get('q') }}">
+            </form>
+
+            {# User area #}
+            {% if app.session and app.session.get('user_email') %}
+                <div class="dropdown">
+                    <button class="user-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="user-avatar-sm">{{ (app.session.get('user_name') ?? app.session.get('user_email'))|first|upper }}</span>
+                        <span class="d-none d-lg-inline">{{ app.session.get('user_name') ?? app.session.get('user_email') }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form action="{{ path('app_logout') }}" method="POST" class="m-0">
+                                <input type="hidden" name="_token" value="{{ csrf_token('logout') }}">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i>Se déconnecter
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-login">
+                    <i class="fa-regular fa-user me-1"></i> Connexion
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {# ── FLASH ── #}
+    <div class="container flash-zone">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show mt-3 mb-0" role="alert" style="border-radius:10px; font-size:0.88rem;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {# ── MAIN ── #}
+    <div class="main-wrap">
+        {% block body %}{% endblock %}
+    </div>
+
+    {# ── FOOTER ── #}
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <a class="footer-brand" href="{{ path('app_home') }}">
+                        <span class="brand-mark" style="background:#4338ca;"><i class="fa-solid fa-bolt"></i></span>
+                        SkillHub
+                    </a>
+                    <p class="footer-desc">La plateforme de formation en ligne pour les professionnels et passionnés qui veulent progresser vite.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <p class="footer-heading">Plateforme</p>
+                    <ul class="footer-links">
+                        <li><a href="{{ path('app_home') }}">Accueil</a></li>
+                        <li><a href="{{ path('app_catalog_all') }}">Catalogue</a></li>
+                        <li><a href="{{ path('app_articles') }}">Blog</a></li>
+                        <li><a href="{{ path('app_login') }}">Connexion</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <p class="footer-heading">Légal</p>
+                    <ul class="footer-links">
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">Confidentialité</a></li>
+                        <li><a href="#">Mentions légales</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4" id="footer-newsletter">
+                    {{ render(controller('App\\Controller\\SubscribeController::showForm')) }}
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+            <p class="footer-copy text-center mb-0">&copy; 2026 SkillHub. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

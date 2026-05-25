@@ -1,0 +1,102 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Créer un compte — SkillHub{% endblock %}
+
+{% block body %}
+<div class="container" style="padding:4rem 1rem;">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div style="text-align:center; margin-bottom:2rem;">
+                <div style="width:52px; height:52px; background:var(--primary); border-radius:14px; display:grid; place-items:center; margin:0 auto 1rem; font-size:1.4rem; color:#fff;">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h1 style="font-size:1.5rem; font-weight:800; margin-bottom:0.3rem; letter-spacing:-0.3px;">Créer un compte</h1>
+                <p style="color:var(--muted); font-size:0.875rem;">Rejoignez +50 000 étudiants sur SkillHub.</p>
+            </div>
+
+            <div style="background:#fff; border:1px solid var(--border); border-radius:14px; padding:2rem; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+
+                    {# Nom complet #}
+                    <div style="margin-bottom:1.1rem;">
+                        {{ form_label(form.fullName, null, {label_attr: {style: 'display:block; font-size:0.82rem; font-weight:600; margin-bottom:0.4rem;'}}) }}
+                        <div style="position:relative;">
+                            <i class="fa-regular fa-user" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem; pointer-events:none;"></i>
+                            {{ form_widget(form.fullName, {attr: {
+                                placeholder: 'Prénom Nom',
+                                style: 'width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none;'
+                            }}) }}
+                        </div>
+                        {% if form.fullName.vars.errors|length > 0 %}
+                            <p style="color:#dc2626; font-size:0.75rem; margin:0.3rem 0 0;">{{ form_errors(form.fullName) }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Email #}
+                    <div style="margin-bottom:1.1rem;">
+                        {{ form_label(form.email, null, {label_attr: {style: 'display:block; font-size:0.82rem; font-weight:600; margin-bottom:0.4rem;'}}) }}
+                        <div style="position:relative;">
+                            <i class="fa-regular fa-envelope" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem; pointer-events:none;"></i>
+                            {{ form_widget(form.email, {attr: {
+                                placeholder: 'nom@exemple.com',
+                                style: 'width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none;'
+                            }}) }}
+                        </div>
+                        {% if form.email.vars.errors|length > 0 %}
+                            <p style="color:#dc2626; font-size:0.75rem; margin:0.3rem 0 0;">{{ form_errors(form.email) }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Mot de passe #}
+                    <div style="margin-bottom:1.1rem;">
+                        {{ form_label(form.password.first, null, {label_attr: {style: 'display:block; font-size:0.82rem; font-weight:600; margin-bottom:0.4rem;'}}) }}
+                        <div style="position:relative;">
+                            <i class="fa-solid fa-lock" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem; pointer-events:none;"></i>
+                            {{ form_widget(form.password.first, {attr: {
+                                placeholder: '••••••••',
+                                style: 'width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none;'
+                            }}) }}
+                        </div>
+                        {% if form.password.first.vars.errors|length > 0 %}
+                            <p style="color:#dc2626; font-size:0.75rem; margin:0.3rem 0 0;">{{ form_errors(form.password.first) }}</p>
+                        {% endif %}
+                    </div>
+
+                    {# Confirmer mot de passe #}
+                    <div style="margin-bottom:1.5rem;">
+                        {{ form_label(form.password.second, null, {label_attr: {style: 'display:block; font-size:0.82rem; font-weight:600; margin-bottom:0.4rem;'}}) }}
+                        <div style="position:relative;">
+                            <i class="fa-solid fa-lock" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem; pointer-events:none;"></i>
+                            {{ form_widget(form.password.second, {attr: {
+                                placeholder: '••••••••',
+                                style: 'width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none;'
+                            }}) }}
+                        </div>
+                        {% if form.password.second.vars.errors|length > 0 %}
+                            <p style="color:#dc2626; font-size:0.75rem; margin:0.3rem 0 0;">{{ form_errors(form.password.second) }}</p>
+                        {% endif %}
+                        {# Erreur globale mot de passe (non-matching) #}
+                        {% if form.password.vars.errors|length > 0 %}
+                            <p style="color:#dc2626; font-size:0.75rem; margin:0.3rem 0 0;">{{ form_errors(form.password) }}</p>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-primary-solid" style="width:100%; justify-content:center; border-radius:9px; padding:0.7rem;">
+                        Créer mon compte <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </button>
+
+                {{ form_end(form) }}
+
+                <div style="text-align:center; margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border);">
+                    <p style="font-size:0.82rem; color:var(--muted); margin:0;">
+                        Déjà un compte ?
+                        <a href="{{ path('app_login') }}" style="color:var(--primary); font-weight:600; text-decoration:none;">Se connecter</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

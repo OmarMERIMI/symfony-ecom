@@ -1,0 +1,131 @@
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <p class="hero-eyebrow"><i class="fa-solid fa-fire me-1" style="color:#f59e0b;"></i> +50 000 étudiants nous font confiance</p>
+                <h1 class="hero-h1">La formation en ligne <br><span class="hero-accent">sérieuse</span>, enfin accessible.</h1>
+                <p class="hero-sub">Des cours conçus par des professionnels du secteur, avec des projets concrets, un suivi personnalisé et un certificat reconnu à la clé.</p>
+                <div class="hero-ctas">
+                    <a href="{{ path('app_catalog_all') }}" class="btn-primary-solid">
+                        Explorer le catalogue <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                    <a href="{{ path('app_login') }}" class="btn-outline-light-custom">
+                        <i class="fa-regular fa-circle-play me-1"></i> Voir une démo
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="hero-stats-grid">
+                    <div class="hstat">
+                        <span class="hstat-val">50 k+</span>
+                        <span class="hstat-lbl">Étudiants actifs</span>
+                    </div>
+                    <div class="hstat">
+                        <span class="hstat-val">200+</span>
+                        <span class="hstat-lbl">Cours disponibles</span>
+                    </div>
+                    <div class="hstat">
+                        <span class="hstat-val">4,8/5</span>
+                        <span class="hstat-lbl">Note moyenne</span>
+                    </div>
+                    <div class="hstat">
+                        <span class="hstat-val">100%</span>
+                        <span class="hstat-lbl">En ligne & à vie</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 65%, #312e81 100%);
+        padding: 4.5rem 0 4rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+        top: -150px;
+        right: -150px;
+        pointer-events: none;
+    }
+
+    .hero-eyebrow {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.6);
+        margin-bottom: 1rem;
+        letter-spacing: 0.02em;
+    }
+
+    .hero-h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1.18;
+        letter-spacing: -0.8px;
+        margin-bottom: 1.1rem;
+    }
+
+    .hero-accent {
+        background: linear-gradient(90deg, #818cf8, #a5b4fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-sub {
+        font-size: 1rem;
+        color: rgba(255,255,255,0.65);
+        line-height: 1.7;
+        max-width: 480px;
+        margin-bottom: 2rem;
+    }
+
+    .hero-ctas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .hero-stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .hstat {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.25rem 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .hstat-val {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+    }
+
+    .hstat-lbl {
+        font-size: 0.78rem;
+        color: rgba(255,255,255,0.5);
+    }
+
+    @media (max-width: 768px) {
+        .hero-h1 { font-size: 2rem; }
+        .hero { padding: 3rem 0; }
+    }
+</style>

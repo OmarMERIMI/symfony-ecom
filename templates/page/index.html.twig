@@ -1,0 +1,121 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}SkillHub — Formation en ligne professionnelle{% endblock %}
+
+{% block body %}
+
+{{ include('partials/_jumbotron.html.twig') }}
+
+<div class="container" style="padding-top:3.5rem; padding-bottom:4rem;">
+
+    {# Section header #}
+    <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between mb-4 gap-3">
+        <div>
+            <p class="section-label">Cours populaires</p>
+            <h2 class="section-title mb-1">Ce que nos étudiants apprennent</h2>
+            <p class="section-sub">Sélectionnés pour leur qualité et leur pertinence sur le marché.</p>
+        </div>
+        <a href="{{ path('app_catalog_all') }}" style="color:var(--primary); font-weight:600; font-size:0.875rem; text-decoration:none; white-space:nowrap;">
+            Voir tout le catalogue <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    {# Course grid #}
+    <div class="row g-3">
+        {% for course in courses %}
+            {% set catMap = {
+                'Développement Web':    {bg:'#dbeafe', color:'#1d4ed8', icon:'fa-code'},
+                'Data Science':         {bg:'#dcfce7', color:'#15803d', icon:'fa-chart-line'},
+                'Design':               {bg:'#fce7f3', color:'#be185d', icon:'fa-pen-ruler'},
+                'DevOps':               {bg:'#fef3c7', color:'#92400e', icon:'fa-server'},
+                'Développement Mobile': {bg:'#ede9fe', color:'#6d28d9', icon:'fa-mobile-screen'},
+                'Marketing Digital':    {bg:'#fee2e2', color:'#b91c1c', icon:'fa-bullhorn'},
+                'Photographie':         {bg:'#cffafe', color:'#0e7490', icon:'fa-camera'},
+                'Vidéo & Animation':    {bg:'#d1fae5', color:'#065f46', icon:'fa-film'}
+            } %}
+            {% set cs = catMap[course.category.name] ?? {bg:'#f1f5f9', color:'#475569', icon:'fa-book'} %}
+
+            <div class="col-sm-6 col-lg-3">
+                <article class="course-card">
+                    <div class="card-top">
+                        <span class="cat-tag" style="background:{{ cs.bg }};color:{{ cs.color }};">
+                            <i class="fa-solid {{ cs.icon }}" style="font-size:0.65rem;"></i>
+                            {{ course.category.name }}
+                        </span>
+                        {% if course.badge == 'Bestseller' %}
+                            <span class="badge-bs">Bestseller</span>
+                        {% elseif course.badge == 'Nouveau' %}
+                            <span class="badge-nw">Nouveau</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body-inner">
+                        <h3 class="c-title">{{ course.name }}</h3>
+                        <p class="c-summary">{{ course.summary }}</p>
+
+                        <div class="rating-row">
+                            <span class="stars">
+                                {% for i in 1..5 %}
+                                    {% if i <= course.rating|round(0, 'floor') %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="r-val">{{ course.rating }}</span>
+                            <span class="r-cnt">({{ course.studentsCount|number_format(0, ',', ' ') }})</span>
+                        </div>
+
+                        <div class="card-meta">
+                            <span class="meta-item">
+                                <span class="av-init">{{ course.author.name|first }}</span>
+                                <span style="max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ course.author.name }}</span>
+                            </span>
+                            {% if course.duration %}
+                                <span class="meta-item"><i class="fa-regular fa-clock"></i> {{ course.duration }}</span>
+                            {% endif %}
+                            {% if course.level %}
+                                <span class="meta-item"><i class="fa-solid fa-signal" style="font-size:0.65rem;"></i> {{ course.level }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-foot">
+                            <span class="c-price">{{ course.price|number_format(0, ',', ' ') }} DH</span>
+                            <a href="{{ path('app_catalog_show', {slug: course.slug}) }}" class="btn-card">
+                                Voir le cours <i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p class="text-muted text-center py-5">Aucun cours disponible pour le moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Categories strip #}
+    <div style="margin-top:3.5rem; padding:2rem; background:#fff; border:1px solid var(--border); border-radius:14px;">
+        <p class="section-label text-center">Parcourir par domaine</p>
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+            {% set allCats = [
+                {name:'Développement Web',    bg:'#dbeafe', color:'#1d4ed8', icon:'fa-code'},
+                {name:'Data Science',         bg:'#dcfce7', color:'#15803d', icon:'fa-chart-line'},
+                {name:'Design',               bg:'#fce7f3', color:'#be185d', icon:'fa-pen-ruler'},
+                {name:'DevOps',               bg:'#fef3c7', color:'#92400e', icon:'fa-server'},
+                {name:'Développement Mobile', bg:'#ede9fe', color:'#6d28d9', icon:'fa-mobile-screen'},
+                {name:'Marketing Digital',    bg:'#fee2e2', color:'#b91c1c', icon:'fa-bullhorn'},
+                {name:'Photographie',         bg:'#cffafe', color:'#0e7490', icon:'fa-camera'},
+                {name:'Vidéo & Animation',    bg:'#d1fae5', color:'#065f46', icon:'fa-film'}
+            ] %}
+            {% for cat in allCats %}
+                <a href="{{ path('app_catalog_all', {q: cat.name}) }}"
+                   style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;border-radius:30px;background:{{ cat.bg }};color:{{ cat.color }};font-size:0.8rem;font-weight:600;text-decoration:none;transition:opacity 0.15s;"
+                   onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <i class="fa-solid {{ cat.icon }}" style="font-size:0.72rem;"></i>
+                    {{ cat.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends app.request.attributes.get('_route') == 'app_subscribe' ? 'layout.html.twig' : 'empty_layout.html.twig' %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div style="background:#fff; border:1px solid var(--border); border-radius:14px; padding:2rem; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                {{ block('form_content') }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block form_content %}
+<p class="nl-title">Restez informé</p>
+<p class="nl-sub">Recevez nos nouvelles formations et bons plans directement dans votre boîte mail.</p>
+
+{{ form_start(form, {action: path('app_subscribe'), attr: {class: 'nl-form'}}) }}
+    {{ form_widget(form.email, {attr: {placeholder: 'votre@email.com'}}) }}
+    <button type="submit"><i class="fa-solid fa-paper-plane me-1"></i> S'abonner</button>
+{{ form_end(form) }}
+
+{% if form.email.vars.errors|length > 0 %}
+    <div style="color:#dc2626; font-size:0.78rem; margin-top:0.5rem;">
+        {{ form_errors(form.email) }}
+    </div>
+{% endif %}
+{% endblock %}

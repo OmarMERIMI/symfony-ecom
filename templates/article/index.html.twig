@@ -1,0 +1,181 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Blog — SkillHub{% endblock %}
+
+{% block body %}
+
+{# ── En-tête ── #}
+<div style="background:#fff; border-bottom:1px solid var(--border); padding:2rem 0 1.5rem;">
+    <div class="container">
+        <p class="section-label">Blog</p>
+        <h1 class="section-title mb-1">Ressources & conseils</h1>
+        <p class="section-sub">Carrière, tech, design — des articles écrits par nos formateurs experts.</p>
+    </div>
+</div>
+
+{% set catColors = {
+    'Carrière':          {bg:'#fef3c7', color:'#92400e'},
+    'Développement Web': {bg:'#dbeafe', color:'#1d4ed8'},
+    'DevOps':            {bg:'#fef3c7', color:'#92400e'},
+    'Design':            {bg:'#fce7f3', color:'#be185d'},
+    'Data Science':      {bg:'#dcfce7', color:'#15803d'}
+} %}
+
+<div class="container" style="padding-top:2.5rem; padding-bottom:4rem;">
+
+    {% if articles|length > 0 %}
+
+        {# ── Article à la une (premier) ── #}
+        {% set featured = articles[0] %}
+        {% set fc = catColors[featured.category] ?? {bg:'#f1f5f9', color:'#475569'} %}
+        <a href="{{ path('app_article_show', {slug: featured.slug}) }}" class="article-featured-link">
+            <article class="article-featured">
+                <div class="af-img">
+                    <img src="{{ featured.imagePath }}" alt="{{ featured.title }}">
+                    {% if featured.tag %}
+                        <span class="af-tag">{{ featured.tag }}</span>
+                    {% endif %}
+                </div>
+                <div class="af-body">
+                    <span class="cat-tag mb-3 d-inline-flex" style="background:{{ fc.bg }};color:{{ fc.color }};">{{ featured.category }}</span>
+                    <h2 class="af-title">{{ featured.title }}</h2>
+                    <p class="af-excerpt">{{ featured.excerpt }}</p>
+                    <div class="af-meta">
+                        <span class="av-init" style="width:28px;height:28px;font-size:0.7rem;">{{ featured.authorName|first }}</span>
+                        <span style="font-weight:600;">{{ featured.authorName }}</span>
+                        <span style="color:var(--border);">·</span>
+                        <span>{{ featured.publishedAt }}</span>
+                        <span style="color:var(--border);">·</span>
+                        <span><i class="fa-regular fa-clock me-1"></i>{{ featured.readTime }} min</span>
+                        <span style="color:var(--border);">·</span>
+                        <span><i class="fa-regular fa-heart me-1" style="color:#f43f5e;"></i>{{ featured.likes }}</span>
+                    </div>
+                </div>
+            </article>
+        </a>
+
+        {# ── Grille des autres articles ── #}
+        {% if articles|length > 1 %}
+        <div class="row g-3 mt-2">
+            {% for article in articles|slice(1) %}
+                {% set c = catColors[article.category] ?? {bg:'#f1f5f9', color:'#475569'} %}
+                <div class="col-sm-6 col-lg-4">
+                    <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="article-card-link">
+                        <article class="article-card">
+                            <div class="ac-img">
+                                <img src="{{ article.imagePath }}" alt="{{ article.title }}">
+                                {% if article.tag %}
+                                    <span class="ac-tag">{{ article.tag }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="ac-body">
+                                <span class="cat-tag mb-2 d-inline-flex" style="background:{{ c.bg }};color:{{ c.color }}; font-size:0.68rem;">{{ article.category }}</span>
+                                <h3 class="ac-title">{{ article.title }}</h3>
+                                <p class="ac-excerpt">{{ article.excerpt }}</p>
+                                <div class="ac-meta">
+                                    <span class="av-init" style="width:22px;height:22px;font-size:0.6rem;">{{ article.authorName|first }}</span>
+                                    <span>{{ article.authorName }}</span>
+                                    <span style="color:var(--border);">·</span>
+                                    <span><i class="fa-regular fa-clock me-1"></i>{{ article.readTime }} min</span>
+                                    <span class="ms-auto" style="display:flex;align-items:center;gap:0.3rem;">
+                                        <i class="fa-regular fa-heart" style="color:#f43f5e;"></i>{{ article.likes }}
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    {% else %}
+        <p class="text-center text-muted py-5">Aucun article disponible pour le moment.</p>
+    {% endif %}
+
+</div>
+
+<style>
+    /* Featured article */
+    .article-featured-link { text-decoration:none; color:inherit; display:block; }
+    .article-featured {
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:0;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:14px;
+        overflow:hidden;
+        transition: box-shadow 0.2s;
+    }
+    .article-featured:hover { box-shadow:0 8px 32px rgba(67,56,202,0.1); }
+
+    .af-img { position:relative; overflow:hidden; min-height:300px; }
+    .af-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+    .article-featured:hover .af-img img { transform:scale(1.03); }
+    .af-tag {
+        position:absolute; top:1rem; left:1rem;
+        background:#4338ca; color:#fff;
+        font-size:0.68rem; font-weight:700;
+        padding:0.25rem 0.6rem; border-radius:4px;
+        text-transform:uppercase; letter-spacing:0.05em;
+    }
+
+    .af-body { padding:2rem; display:flex; flex-direction:column; justify-content:center; }
+    .af-title {
+        font-size:1.4rem; font-weight:800; line-height:1.3;
+        letter-spacing:-0.3px; color:var(--text); margin:0.5rem 0 0.75rem;
+    }
+    .af-excerpt { font-size:0.88rem; color:var(--muted); line-height:1.7; margin-bottom:1.25rem; }
+    .af-meta { display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; font-size:0.78rem; color:var(--muted); }
+
+    /* Article card */
+    .article-card-link { text-decoration:none; color:inherit; display:block; height:100%; }
+    .article-card {
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:12px;
+        overflow:hidden;
+        height:100%;
+        display:flex;
+        flex-direction:column;
+        transition:box-shadow 0.2s, border-color 0.2s;
+    }
+    .article-card:hover { box-shadow:0 6px 24px rgba(67,56,202,0.1); border-color:#c7d2fe; }
+
+    .ac-img { position:relative; overflow:hidden; height:180px; }
+    .ac-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+    .article-card:hover .ac-img img { transform:scale(1.04); }
+    .ac-tag {
+        position:absolute; top:0.65rem; left:0.65rem;
+        background:#f59e0b; color:#fff;
+        font-size:0.63rem; font-weight:700;
+        padding:0.2rem 0.5rem; border-radius:4px;
+        text-transform:uppercase; letter-spacing:0.05em;
+    }
+
+    .ac-body { padding:1rem 1.1rem 1rem; display:flex; flex-direction:column; flex:1; }
+    .ac-title {
+        font-size:0.92rem; font-weight:700; line-height:1.4;
+        color:var(--text); margin:0.35rem 0 0.5rem;
+        display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .ac-excerpt {
+        font-size:0.78rem; color:var(--muted); line-height:1.55;
+        display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+        flex:1; margin-bottom:0.75rem;
+    }
+    .ac-meta {
+        display:flex; align-items:center; gap:0.5rem;
+        font-size:0.73rem; color:var(--muted);
+        border-top:1px solid var(--border); padding-top:0.65rem; margin-top:auto;
+    }
+
+    @media (max-width:768px) {
+        .article-featured { grid-template-columns:1fr; }
+        .af-img { min-height:200px; }
+        .af-body { padding:1.25rem; }
+        .af-title { font-size:1.15rem; }
+    }
+</style>
+{% endblock %}

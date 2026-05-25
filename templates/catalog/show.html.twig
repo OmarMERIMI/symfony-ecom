@@ -1,0 +1,184 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ course.name }} — SkillHub{% endblock %}
+
+{% block body %}
+
+{% set catMap = {
+    'Développement Web':    {bg:'#dbeafe', color:'#1d4ed8', icon:'fa-code'},
+    'Data Science':         {bg:'#dcfce7', color:'#15803d', icon:'fa-chart-line'},
+    'Design':               {bg:'#fce7f3', color:'#be185d', icon:'fa-pen-ruler'},
+    'DevOps':               {bg:'#fef3c7', color:'#92400e', icon:'fa-server'},
+    'Développement Mobile': {bg:'#ede9fe', color:'#6d28d9', icon:'fa-mobile-screen'},
+    'Marketing Digital':    {bg:'#fee2e2', color:'#b91c1c', icon:'fa-bullhorn'},
+    'Photographie':         {bg:'#cffafe', color:'#0e7490', icon:'fa-camera'},
+    'Vidéo & Animation':    {bg:'#d1fae5', color:'#065f46', icon:'fa-film'}
+} %}
+{% set cs = catMap[course.category.name] ?? {bg:'#f1f5f9', color:'#475569', icon:'fa-book'} %}
+
+{# Hero banner du cours #}
+<div style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%); padding:2.5rem 0 2rem; border-bottom:1px solid #1e293b;">
+    <div class="container">
+        <nav style="font-size:0.75rem; color:rgba(255,255,255,0.45); margin-bottom:1rem;">
+            <a href="{{ path('app_home') }}" style="color:rgba(255,255,255,0.45); text-decoration:none;">Accueil</a>
+            <span class="mx-2">/</span>
+            <a href="{{ path('app_catalog_all') }}" style="color:rgba(255,255,255,0.45); text-decoration:none;">Catalogue</a>
+            <span class="mx-2">/</span>
+            <span style="color:rgba(255,255,255,0.7);">{{ course.name }}</span>
+        </nav>
+
+        <div class="row align-items-start g-4">
+            <div class="col-lg-8">
+                <span class="cat-tag mb-3 d-inline-flex" style="background:{{ cs.bg }};color:{{ cs.color }};">
+                    <i class="fa-solid {{ cs.icon }}" style="font-size:0.65rem;"></i>
+                    {{ course.category.name }}
+                </span>
+                {% if course.badge %}
+                    <span class="{{ course.badge == 'Bestseller' ? 'badge-bs' : 'badge-nw' }} ms-2">{{ course.badge }}</span>
+                {% endif %}
+
+                <h1 style="font-size:1.9rem; font-weight:800; color:#fff; line-height:1.25; letter-spacing:-0.5px; margin:0.75rem 0 0.6rem;">
+                    {{ course.name }}
+                </h1>
+
+                <p style="color:rgba(255,255,255,0.7); font-size:0.95rem; line-height:1.6; max-width:600px; margin-bottom:1.25rem;">
+                    {{ course.summary }}
+                </p>
+
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:1.25rem; font-size:0.82rem; color:rgba(255,255,255,0.6);">
+                    {% if course.rating %}
+                        <span style="display:flex;align-items:center;gap:0.35rem;">
+                            <span style="color:#f59e0b; letter-spacing:0.04em;">
+                                {% for i in 1..5 %}{% if i <= course.rating|round(0,'floor') %}★{% else %}☆{% endif %}{% endfor %}
+                            </span>
+                            <strong style="color:#fff;">{{ course.rating }}</strong>
+                            <span>({{ course.studentsCount|number_format(0, ',', ' ') }} étudiants)</span>
+                        </span>
+                    {% endif %}
+                    {% if course.duration %}
+                        <span><i class="fa-regular fa-clock me-1"></i>{{ course.duration }}</span>
+                    {% endif %}
+                    {% if course.level %}
+                        <span><i class="fa-solid fa-signal me-1" style="font-size:0.7rem;"></i>{{ course.level }}</span>
+                    {% endif %}
+                </div>
+
+                <div style="margin-top:1.25rem; display:flex; align-items:center; gap:0.6rem; font-size:0.83rem; color:rgba(255,255,255,0.55);">
+                    <span class="av-init" style="width:30px;height:30px;font-size:0.75rem;background:rgba(99,102,241,0.5);">{{ course.author.name|first }}</span>
+                    Proposé par <strong style="color:rgba(255,255,255,0.85); margin-left:0.2rem;">{{ course.author.name }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Corps principal #}
+<div class="container" style="padding-top:2rem; padding-bottom:4rem;">
+    <div class="row g-4 align-items-start">
+
+        {# Contenu gauche #}
+        <div class="col-lg-8">
+
+            {# Image du cours #}
+            <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border); margin-bottom:2rem;">
+                <img src="{{ course.imagePath }}" alt="{{ course.name }}" style="width:100%; height:320px; object-fit:cover; display:block;">
+            </div>
+
+            {# À propos #}
+            <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.75rem; margin-bottom:1.5rem;">
+                <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem; letter-spacing:-0.2px;">À propos de ce cours</h2>
+                <p style="color:var(--muted); line-height:1.8; font-size:0.92rem; margin:0;">{{ course.description }}</p>
+            </div>
+
+            {# Ce que vous allez apprendre #}
+            <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.75rem; margin-bottom:1.5rem;">
+                <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:1rem;">Ce que vous apprendrez</h2>
+                <div class="row g-2">
+                    {% set skills = [
+                        'Maîtriser les fondamentaux du domaine',
+                        'Construire des projets professionnels concrets',
+                        'Appliquer les meilleures pratiques du secteur',
+                        'Préparer votre portfolio et vos entretiens',
+                        'Travailler de manière autonome sur des projets réels',
+                        'Obtenir votre certificat de complétion'
+                    ] %}
+                    {% for skill in skills %}
+                        <div class="col-md-6">
+                            <div style="display:flex; align-items:flex-start; gap:0.6rem; font-size:0.84rem; color:var(--text);">
+                                <i class="fa-solid fa-check" style="color:#22c55e; margin-top:0.2rem; flex-shrink:0;"></i>
+                                {{ skill }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Cours similaires #}
+            <div>
+                <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; letter-spacing:-0.2px;">Cours similaires</h2>
+                {{ render(controller('App\\Controller\\CatalogController::similarCourses', {'slug': course.slug})) }}
+            </div>
+        </div>
+
+        {# Sidebar sticky #}
+        <div class="col-lg-4">
+            <div style="background:#fff; border:1px solid var(--border); border-radius:14px; padding:1.5rem; position:sticky; top:80px; box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+
+                <div style="text-align:center; padding-bottom:1.25rem; border-bottom:1px solid var(--border); margin-bottom:1.25rem;">
+                    <p style="font-size:0.75rem; color:var(--muted); margin-bottom:0.25rem;">Prix du cours</p>
+                    <p style="font-size:2.2rem; font-weight:800; color:var(--primary); letter-spacing:-1px; margin:0;">
+                        {{ course.price|number_format(0, ',', ' ') }} DH
+                    </p>
+                    {% if course.badge == 'Bestseller' %}
+                        <span class="badge-bs mt-2 d-inline-block">Le plus populaire</span>
+                    {% endif %}
+                </div>
+
+                {# Bouton inscription #}
+                {% if app.session and course.slug in app.session.get('enrolled_courses', []) %}
+                    <button class="btn w-100 mb-3" disabled
+                            style="background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; border-radius:9px; font-weight:700; padding:0.75rem; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                        <i class="fa-solid fa-circle-check"></i> Déjà inscrit
+                    </button>
+                {% else %}
+                    <form action="{{ path('app_catalog_enroll', {slug: course.slug}) }}" method="POST" class="mb-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('enroll_' ~ course.slug) }}">
+                        <button type="submit" class="btn-primary-solid w-100" style="border-radius:9px; padding:0.75rem; font-size:0.9rem; justify-content:center;">
+                            S'inscrire maintenant <i class="fa-solid fa-graduation-cap ms-1"></i>
+                        </button>
+                    </form>
+                {% endif %}
+
+                {# Wishlist #}
+                {{ form_start(form, {attr: {class: 'mb-3'}}) }}
+                    <button type="submit"
+                            style="width:100%; background:#fff; border:1px solid var(--border); border-radius:9px; padding:0.6rem; font-size:0.85rem; font-weight:600; color:var(--muted); cursor:pointer; transition:border-color 0.15s, color 0.15s; display:flex; align-items:center; justify-content:center; gap:0.5rem; font-family:inherit;"
+                            onmouseover="this.style.borderColor='#c7d2fe';this.style.color='var(--primary)'"
+                            onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+                        <i class="fa-regular fa-heart"></i> Ajouter à ma wishlist
+                    </button>
+                {{ form_end(form) }}
+
+                {# Avantages #}
+                <div style="border-top:1px solid var(--border); padding-top:1.1rem;">
+                    <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.75rem;">Ce cours comprend</p>
+                    {% set perks = [
+                        {icon:'fa-infinity',        label:'Accès à vie'},
+                        {icon:'fa-mobile-screen',   label:'Compatible mobile & tablette'},
+                        {icon:'fa-certificate',     label:'Certificat de complétion'},
+                        {icon:'fa-headset',         label:'Support instructeur'},
+                        {icon:'fa-file-code',       label:'Fichiers sources inclus'}
+                    ] %}
+                    {% for perk in perks %}
+                        <div style="display:flex; align-items:center; gap:0.6rem; font-size:0.82rem; color:var(--text); margin-bottom:0.5rem;">
+                            <i class="fa-solid {{ perk.icon }}" style="color:var(--primary); width:14px; text-align:center;"></i>
+                            {{ perk.label }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

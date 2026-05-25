@@ -1,0 +1,59 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Connexion — SkillHub{% endblock %}
+
+{% block body %}
+<div class="container" style="padding:4rem 1rem;">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+
+            <div style="text-align:center; margin-bottom:2rem;">
+                <div style="width:52px; height:52px; background:var(--primary); border-radius:14px; display:grid; place-items:center; margin:0 auto 1rem; font-size:1.4rem; color:#fff;">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h1 style="font-size:1.5rem; font-weight:800; margin-bottom:0.3rem; letter-spacing:-0.3px;">Bon retour !</h1>
+                <p style="color:var(--muted); font-size:0.875rem;">Connectez-vous pour accéder à vos cours.</p>
+            </div>
+
+            <div style="background:#fff; border:1px solid var(--border); border-radius:14px; padding:2rem; box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+                <form method="POST" action="{{ path('app_login') }}">
+                    <div style="margin-bottom:1.1rem;">
+                        <label style="display:block; font-size:0.82rem; font-weight:600; margin-bottom:0.4rem;">Adresse email</label>
+                        <div style="position:relative;">
+                            <i class="fa-regular fa-envelope" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem;"></i>
+                            <input type="email" name="_username" placeholder="nom@exemple.com" required autofocus
+                                   style="width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none; transition:border-color 0.15s;"
+                                   onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:1.5rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                            <label style="font-size:0.82rem; font-weight:600;">Mot de passe</label>
+                            <a href="#" style="font-size:0.78rem; color:var(--primary); text-decoration:none;">Oublié ?</a>
+                        </div>
+                        <div style="position:relative;">
+                            <i class="fa-solid fa-lock" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.8rem;"></i>
+                            <input type="password" name="_password" placeholder="••••••••" required
+                                   style="width:100%; border:1px solid var(--border); border-radius:9px; padding:0.6rem 0.85rem 0.6rem 2.4rem; font-size:0.875rem; font-family:inherit; outline:none; transition:border-color 0.15s;"
+                                   onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border)'">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary-solid" style="width:100%; justify-content:center; border-radius:9px; padding:0.7rem;">
+                        Se connecter <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </button>
+                </form>
+
+                <div style="text-align:center; margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--border);">
+                    <p style="font-size:0.82rem; color:var(--muted); margin:0;">
+                        Pas encore de compte ?
+                        <a href="{{ path('app_register') }}" style="color:var(--primary); font-weight:600; text-decoration:none;">Créer un compte gratuit</a>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
